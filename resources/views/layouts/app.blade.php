@@ -48,6 +48,18 @@
                         <!-- Authentication Links -->
                         @guest
                             <li class="nav-item">
+                                <a class="nav-link" href="/programas">Programas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/campus">Campus</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/facultades">Facultades</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/usuarios">Usuarios</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                             </li>
                             @if (Route::has('register'))

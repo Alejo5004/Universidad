@@ -14,18 +14,15 @@ class CreateProgramsTable extends Migration
     public function up()
     {
         Schema::create('programs', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('id_program');
             $table->string('program_name');
-            $table->string('duration');
-            $table->date('start-date');
             $table->string('modality');
-            $table->string('schedule');
             $table->string('status');
             $table->timestamps();
-            $table->unsignedBigInteger('faculty_id');
-            $table->unsignedBigInteger('campus_id');
-            $table->foreign('faculty_id')->references('id')->on('faculties');
-            $table->foreign('campus_id')->references('id')->on('campuses');
+            $table->unsignedBigInteger('fk_faculty');
+            $table->unsignedBigInteger('fk_campus');
+            $table->foreign('fk_faculty')->references('id_faculty')->on('faculties');
+            $table->foreign('fk_campus')->references('id')->on('campuses');
 
         });
     }

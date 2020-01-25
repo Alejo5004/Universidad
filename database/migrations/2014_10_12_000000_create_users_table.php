@@ -27,10 +27,10 @@ class CreateUsersTable extends Migration
             $table->string('slug');
             $table->rememberToken();
             $table->timestamps();
-            $table->unsignedBigInteger('role_id');
+            $table->unsignedBigInteger('fk_role');
 
 
-            $table->foreign('role_id')->references('id')->on('roles');
+            $table->foreign('fk_role')->references('id_role')->on('roles');
         });
     }
 
