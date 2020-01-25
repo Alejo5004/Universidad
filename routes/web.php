@@ -12,9 +12,22 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+	return view('auth.login');
 });
 
+Route::get('/register', function(){
+	return view('auth.register');
+});
+Route::get('/login', function(){
+	return view('auth.login');
+});
+
+Route::resource('/campus', 'CampusController');
+Route::middleware(['auth'])->group(function () {
+	Route::resource('/programas', 'ProgramController');
+	Route::resource('/facultades', 'FacultyController');
+	Route::resource('/usuarios', 'UserController');
+});
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

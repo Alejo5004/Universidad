@@ -18,6 +18,13 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <!-- DataTable css -->
+    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css"> --}}
+    <!-- DataTable js -->
+    {{-- <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js" crossorigin="anonymous"></script> --}}
+ 
+    
 </head>
 <body>
     <div id="app">
@@ -76,5 +83,11 @@
             @yield('content')
         </main>
     </div>
+
+    {{-- jQuery --}}
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+    @yield('script')
+    
 </body>
 </html>
