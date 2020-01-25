@@ -22,10 +22,10 @@ Route::get('/login', function(){
 	return view('auth.login');
 });
 
-Route::resource('/campus', 'CampusController');
-Route::resource('/programas', 'ProgramController');
-Route::resource('/facultades', 'FacultyController');
 Route::middleware(['auth'])->group(function () {
+	Route::resource('/campus', 'CampusController');
+	Route::resource('/programas', 'ProgramController');
+	Route::resource('/facultades', 'FacultyController');
 	Route::resource('/usuarios', 'UserController');
 });
 Auth::routes();

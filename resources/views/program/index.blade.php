@@ -1,15 +1,16 @@
 @extends('layouts.app')
 @section('content')
     <section class="container">
-        <h1 class="text-center mt-5">Todos los programas</h1>
-        <article class="my-3 text-center">
+        <h1 class="text-center my-5">Todos los programas</h1>
+        @if (Auth::user()->fk_role == 1)
+            <article class="text-center">
 
-            <!-- Boton de Crear Campus -->
-            <a class="btn btn-primary" onclick="ModalProgram('Crear Programa', '/programas', '', '', 'Crear')">Crear Programas</a>
+                <!-- Boton de Crear Campus -->
+                <a class="btn btn-primary" onclick="ModalProgram('Crear Programa', '/programas', '', '', 'Crear')">Crear Programas</a>
 
-            <div id="component"></div>
-        </article>
-
+                <div id="component"></div>
+            </article>
+        @endif
         <table class="table table-striped">
             <thead class="thead-dark">
                 <tr>
@@ -19,8 +20,10 @@
                     <th scope="col">Estatus</th>
                     <th scope="col">Facultad</th>
                     <th scope="col">Campus</th>
-                    <th scope="col">Editar</th>
-                    <th scope="col">Eliminar</th>
+                    @if (Auth::user()->fk_role == 1)
+                        <th scope="col">Editar</th>
+                        <th scope="col">Eliminar</th>
+                    @endif
                 </tr>
             </thead>
             <tbody class="tbody">
@@ -32,35 +35,38 @@
                         <td>{{$program->status}}</td>
                         <td>{{$program->faculty_name}}</td>
                         <td>{{$program->campus_name}}</td>
-                        <td>
-                            <a class="btn btn-warning" 
-                                onclick="ModalProgram(
-                                    'Actualizar Programa',
-                                    '/programas/{{$program->id_program}}',
-                                    'PUT',
-                                    '{{$program->program_name}}',
-                                    '{{$program->modality}}',
-                                    '{{$program->status}}',
-                                    '{{$program->id_faculty}}',
-                                    '{{$program->id}}',
-                                    'Actualizar',
-                                    )">
-                                Editar
-                            </a>
-                        </td>
-                        <td>
-                            <form action="/programas/{{$program->id_program}}" method="post">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-danger btn-delete">Eliminar</button>
-                            </form>
-                        </td>
+                        @if (Auth::user()->fk_role == 1)
+                            <td>
+                                <a class="btn btn-warning" 
+                                    onclick="ModalProgram(
+                                        'Actualizar Programa',
+                                        '/programas/{{$program->id_program}}',
+                                        'PUT',
+                                        '{{$program->program_name}}',
+                                        '{{$program->modality}}',
+                                        '{{$program->status}}',
+                                        '{{$program->id_faculty}}',
+                                        '{{$program->id}}',
+                                        'Actualizar',
+                                        )">
+                                    Editar
+                                </a>
+                            </td>
+                            <td>
+                                <form action="/programas/{{$program->id_program}}" method="post">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="btn btn-danger btn-delete">Eliminar</button>
+                                </form>
+                            </td>
+                        @endif
                     </tr>
                 @endforeach
             </tbody>
         </table>
     </section>
 @endsection
+@if (Auth::user()->fk_role == 1)
 @section('script')
     <script>
         // Eliminar un registro
@@ -296,3 +302,4 @@
         }
     </script>
 @endsection
+@endif

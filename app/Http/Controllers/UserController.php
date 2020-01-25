@@ -3,7 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\User;
+use App\Faculty;
+use App\Role;
+use App\Campus;
+use App\Program;
+use App\UserProgram;
 
 class UserController extends Controller
 {
@@ -64,9 +70,18 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($slug)
     {
-        //
+        $user = DB::table('users')
+            ->join('roles', 'roles.id_role', '=', 'users.fk_role')
+            ->select('users.*', 'roles.*')
+            ->first();
+
+        $userProgram = UserProgram::where('fk_user', $user->id)->get();
+        $programs = Program::all();
+        $roles = Role::all();
+
+        return view('user.show', compact('user', 'userProgram', 'programs', 'roles'));
     }
 
     /**

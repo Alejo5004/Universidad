@@ -11,4 +11,5 @@ class Program extends Model
     protected $table = 'programs';
 
     protected $primaryKey = 'id_program';
+    
 }
