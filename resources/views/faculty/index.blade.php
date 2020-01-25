@@ -1,11 +1,11 @@
 @extends('layouts.app')
 @section('content')
     <section class="container">
-        <h1 class="text-center mt-5">Todos los programas</h1>
+        <h1 class="text-center mt-5">Todos las Facultades</h1>
         <article class="my-3 text-center">
 
             <!-- Boton de Crear Campus -->
-            <a class="btn btn-primary" onclick="ModalProgram('Crear Programa', '/programas', '', '', 'Crear')">Crear Programas</a>
+            <a class="btn btn-primary" onclick="ModalFaculty('Crear Facultad', '/facultades', '', '', '', 'Crear')">Crear Facultades</a>
 
             <div id="component"></div>
         </article>
@@ -15,41 +15,32 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Nombre</th>
-                    <th scope="col">Modalidad</th>
-                    <th scope="col">Estatus</th>
-                    <th scope="col">Facultad</th>
-                    <th scope="col">Campus</th>
+                    <th scope="col">Descripcion</th>
                     <th scope="col">Editar</th>
                     <th scope="col">Eliminar</th>
                 </tr>
             </thead>
             <tbody class="tbody">
-                @foreach ($programs as $program)
+                @foreach ($faculties as $faculty)
                     <tr>
-                        <th scope="row">{{$program->id_program}}</th>
-                        <td>{{$program->program_name}}</td>
-                        <td>{{$program->modality}}</td>
-                        <td>{{$program->status}}</td>
-                        <td>{{$program->faculty_name}}</td>
-                        <td>{{$program->campus_name}}</td>
+                        <th scope="row">{{$faculty->id_faculty}}</th>
+                        <td>{{$faculty->faculty_name}}</td>
+                        <td>{{$faculty->faculty_description}}</td>
                         <td>
                             <a class="btn btn-warning" 
-                                onclick="ModalProgram(
-                                    'Actualizar Programa',
-                                    '/programas/{{$program->id_program}}',
+                                onclick="ModalFaculty(
+                                    'Actualizar Facultad',
+                                    '/facultades/{{$faculty->id_faculty}}',
                                     'PUT',
-                                    '{{$program->program_name}}',
-                                    '{{$program->modality}}',
-                                    '{{$program->status}}',
-                                    '{{$program->id_faculty}}',
-                                    '{{$program->id}}',
+                                    '{{$faculty->faculty_name}}',
+                                    '{{$faculty->faculty_description}}',
                                     'Actualizar',
                                     )">
                                 Editar
                             </a>
                         </td>
                         <td>
-                            <form action="/programas/{{$program->id_program}}" method="post">
+                            <form action="/facultades/{{$faculty->id_faculty}}" method="post">
                                 @csrf
                                 @method('DELETE')
                                 <button class="btn btn-danger btn-delete">Eliminar</button>
@@ -91,11 +82,8 @@
         function send() {
             $('#form').submit(function(e){
                 e.preventDefault();
-                var dataProgram_name = $('#program_name').val();
-                var dataModality = $('#modality').val();
-                var dataStatus = $('#status').val();
-                var dataFk_faculty = $('#fk_faculty').val();
-                var dataFk_campus = $('#fk_campus').val();
+                var dataFaculty_name = $('#faculty_name').val();
+                var dataFaculty_description = $('#faculty_description').val();
 
                 var sendMethod= $('input[name="_method"]').attr('value')
 
@@ -114,11 +102,8 @@
                     method: sendMethod,
                     dataType: 'json',
                     data: {
-                        program_name: dataProgram_name,
-                        modality: dataModality, 
-                        status: dataStatus, 
-                        fk_faculty: dataFk_faculty, 
-                        fk_campus: dataFk_campus,
+                        faculty_name: dataFaculty_name,
+                        faculty_description: dataFaculty_description,
                     },
                     beforeSend: function(){
                         $('.btn-send').attr('disable', 'true').html(`
@@ -140,31 +125,24 @@
                     if(sendMethod == 'Post'){
                         $('tbody').append(`
                         <tr>
-                            <th scope="row">${res.id_program}</th>
-                            <td>${res.program_name}</td>
-                            <td>${res.modality}</td>
-                            <td>${res.status}</td>
+                            <th scope="row">${res.id_faculty}</th>
                             <td>${res.faculty_name}</td>
-                            <td>${res.campus_name}</td>
+                            <td>${res.faculty_description}</td>
                             <td>
                                 <a class="btn btn-warning" 
-                                    onclick="ModalProgram(
+                                    onclick="ModalFaculty(
                                         'Actualizar Programa',
-                                        '/programas/${res.id_program}',
+                                        '/facultades/${res.id_faculty}',
                                         'PUT',
-                                        '${res.program_name}',
-                                        '${res.modality}',
-                                        '${res.status}',
-                                        '${res.id_faculty}',
-                                        '${res.id}',
+                                        '${res.faculty_name}',
+                                        '${res.faculty_description}',
                                         'Actualizar',
                                         )">
                                     Editar
                                 </a>
                             </td>
                             <td>
-                                
-                                <form action="/programas/${res.id_program}" method="post">
+                                <form action="/facultades/${res.id_faculty}" method="post">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn btn-danger btn-delete">Eliminar</button>
@@ -175,33 +153,27 @@
                     }else{
                         $('tbody').empty();
                         $.each( res, function( key, value ) {
-                            $.each( value, function( key,  program) {
+                            $.each( value, function( key,  faculty) {
                                 $('tbody').append(`
                                 <tr>
-                                    <th scope="row">${program.id_program}</th>
-                                    <td>${program.program_name}</td>
-                                    <td>${program.modality}</td>
-                                    <td>${program.status}</td>
-                                    <td>${program.faculty_name}</td>
-                                    <td>${program.campus_name}</td>
+                                    <th scope="row">${faculty.id_faculty}</th>
+                                    <td>${faculty.faculty_name}</td>
+                                    <td>${faculty.faculty_description}</td>
                                     <td>
                                         <a class="btn btn-warning" 
-                                            onclick="ModalProgram(
+                                            onclick="ModalFaculty(
                                                 'Actualizar Programa',
-                                                '/programas/${program.id_program}',
+                                                '/facultades/${faculty.id_faculty}',
                                                 'PUT',
-                                                '${program.program_name}',
-                                                '${program.modality}',
-                                                '${program.status}',
-                                                '${program.id_faculty}',
-                                                '${program.id}',
+                                                '${faculty.faculty_name}',
+                                                '${faculty.faculty_description}',
                                                 'Actualizar',
                                                 )">
                                             Editar
                                         </a>
                                     </td>
                                     <td>
-                                        <form action="/programas/${program.id_program}" method="post">
+                                        <form action="/facultades/${faculty.id_faculty}" method="post">
                                             @csrf
                                             @method('DELETE')
                                             <button class="btn btn-danger btn-delete">Eliminar</button>
@@ -222,17 +194,14 @@
                 })
                 .always(function(){
                     $('.btn-send').attr('disable', 'false').html('Crear');
-                    $('#program_name').val('');
-                    $('#modality').val('');
-                    $('#status').val('');
-                    $('#fk_faculty').val('');
-                    $('#fk_campus').val('');
+                    $('#faculty_name').val('');
+                    $('#faculty_description').val('');
                 })
             })
         };
 
         // Modal de edit y create
-        function ModalProgram(title, action, method, program_name, btn ){
+        function ModalFaculty(title, action, method, faculty_name, faculty_description, btn ){
             $('#component').empty()
             $('#component').append(`
                 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
@@ -250,38 +219,12 @@
                                 <div class="modal-body">
                                     <div id="alert"></div>
                                     <div class="form-group">
-                                        <label for="program_name">Nombre</label>
-                                        <input type="text" class="form-control" id="program_name" name="program_name" required="true" value="${program_name}">
+                                        <label for="faculty_name">Nombre</label>
+                                        <input type="text" class="form-control" id="faculty_name" name="faculty_name" required="true" value="${faculty_name}">
                                     </div>
-                                    <div class="input-group mb-3">
-                                        <select name="modality" id="modality" class="custom-select" required="true">
-                                            <option selected>Selecciona una modalidad</option>
-                                            <option value="Presencial" {{ $program->modality == 'Presencial' ? 'selected' : '' }}>Presencial</option>
-                                            <option value="Virtual" {{ $program->modality == 'Virtual' ? 'selected' : '' }}>Virtual</option>
-                                        </select>
-                                    </div>
-                                    <div class="input-group mb-3">
-                                        <select name="status" id="status" class="custom-select" required="true">
-                                            <option selected>Selecciona una Estado</option>
-                                            <option value="Activa" {{ $program->status == 'Activa' ? 'selected' : '' }}>Activa</option>
-                                            <option value="Desactiva" {{ $program->status == 'Desactiva' ? 'selected' : '' }}>Desactiva</option>
-                                        </select>
-                                    </div>
-                                    <div class="input-group mb-3">
-                                        <select name="fk_faculty" id="fk_faculty" class="custom-select" required="true">
-                                            <option selected>Selecciona una facultad</option>
-                                            @foreach($faculties as $faculty)
-                                                <option value="{{$faculty->id_faculty}}" {{ $faculty->id_faculty == $program->fk_faculty ? 'selected' : '' }}>{{$faculty->faculty_name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="input-group mb-3">
-                                        <select name="fk_campus" id="fk_campus" class="custom-select" required="true">
-                                            <option selected>Selecciona un Campus</option>
-                                            @foreach($campuses as $campus)
-                                                <option value="{{$campus->id}}" {{ $campus->id == $program->fk_campus ? 'selected' : '' }}>{{$campus->campus_name}}</option>
-                                            @endforeach
-                                        </select>
+                                    <div class="form-group">
+                                        <label for="faculty_description">Descripción</label>
+                                        <input type="text" class="form-control" id="faculty_description" name="faculty_description" required="true" value="${faculty_description}">
                                     </div>
                                 </div>
                                 <div class="modal-footer">
