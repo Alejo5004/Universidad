@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\User;
 use App\Faculty;
 use App\Role;
@@ -20,25 +21,30 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = DB::table('users')
-            ->join('roles', 'roles.id_role', '=', 'users.fk_role')
-            ->select('users.*', 'roles.*')
-            ->orderBy('users.id')
-            ->get();
-            
-        $programs1 = DB::table('users')
-            ->join('programs', 'programs.id_program', '=', 'users.fk_program1')
-            ->select('users.*','programs.program_name', 'programs.id_program')
-            ->orderBy('users.id')
-            ->get();
+        if(Auth::user()->fk_role == 1){
 
-        $programs2 = DB::table('users')
-            ->join('programs', 'programs.id_program', '=', 'users.fk_program2')
-            ->select('users.*','programs.program_name', 'programs.id_program')
-            ->orderBy('users.id')
-            ->get();
-
-        return view('user.index', compact('users', 'programs1', 'programs2'));
+            $users = DB::table('users')
+                ->join('roles', 'roles.id_role', '=', 'users.fk_role')
+                ->select('users.*', 'roles.*')
+                ->orderBy('users.id')
+                ->get();
+                
+            $programs1 = DB::table('users')
+                ->join('programs', 'programs.id_program', '=', 'users.fk_program1')
+                ->select('users.*','programs.program_name', 'programs.id_program')
+                ->orderBy('users.id')
+                ->get();
+    
+            $programs2 = DB::table('users')
+                ->join('programs', 'programs.id_program', '=', 'users.fk_program2')
+                ->select('users.*','programs.program_name', 'programs.id_program')
+                ->orderBy('users.id')
+                ->get();
+    
+            return view('user.index', compact('users', 'programs1', 'programs2'));
+        }else{
+            return redirect()->route('usuarios.show', [Auth::user()->slug]);
+        }
     }
 
     /**
@@ -90,7 +96,7 @@ class UserController extends Controller
 
         $programs = Program::all();
         $roles = Role::all();
-        
+        // return $program1;
         return view('user.show', compact('user', 'programs', 'program1', 'program2', 'roles'));
     }
 

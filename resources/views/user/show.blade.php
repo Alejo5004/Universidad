@@ -52,7 +52,11 @@
                                 <select name="fk_program1" id="fk_program1" class="custom-select" disabled="true">
                                     <option selected>Seleccione</option>
                                     @foreach ($programs as $program)
+                                    @if (empty($program1))
+                                        <option value="{{$program->id_program}}">{{$program->program_name}}</option>
+                                    @else
                                         <option value="{{$program->id_program}}" {{$program->id_program == $program1->id_program ? 'selected': ''}}>{{$program->program_name}}</option>
+                                    @endif
                                     @endforeach
                                 </select>
                             </div>
@@ -63,7 +67,11 @@
                                 <select name="fk_program2" id="fk_program2" class="custom-select" disabled="true">
                                     <option selected>Seleccione</option>
                                     @foreach ($programs as $program)
-                                        <option value="{{$program->id_program}}" {{$program->id_program == $program2->id_program ? 'selected': ''}}>{{$program->program_name}}</option>
+                                        @if (empty($program2))
+                                            <option value="{{$program->id_program}}">{{$program->program_name}}</option>
+                                        @else
+                                            <option value="{{$program->id_program}}" {{$program->id_program == $program2->id_program ? 'selected': ''}}>{{$program->program_name}}</option>
+                                        @endif
                                     @endforeach
                                 </select>
                             </div>

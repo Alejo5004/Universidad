@@ -28,9 +28,9 @@ class HomeController extends Controller
         $role = Role::where('id_role', Auth::user()->fk_role)->first();
 
         if($role->id_role == 1){
-            return redirect()->route('usuarios.show', [Auth::user()->slug]);
-        }else{
             return redirect()->route('usuarios.index');
+        }else{
+            return redirect()->route('usuarios.show', [Auth::user()->slug]);
         }
     }
 }
