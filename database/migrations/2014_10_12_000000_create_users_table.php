@@ -27,9 +27,17 @@ class CreateUsersTable extends Migration
             $table->string('slug')->unique();
             $table->rememberToken();
             $table->timestamps();
-            $table->unsignedBigInteger('fk_role');
+            $table->unsignedBigInteger('fk_role')->nullable();
+            $table->unsignedBigInteger('fk_program1')->nullable();
+            $table->unsignedBigInteger('fk_program2')->nullable();
 
-            $table->foreign('fk_role')->references('id_role')->on('roles');
+            $table->foreign('fk_role')->references('id_role')->on('roles')->onDelete('set null');
+            $table->foreign('fk_program1')->references('id_program')->on('programs')->onDelete('set null');
+            $table->foreign('fk_program2')->references('id_program')->on('programs')->onDelete('set null');
+            
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_unicode_ci';
         });
     }
 

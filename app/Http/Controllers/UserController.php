@@ -20,8 +20,25 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
-        return view('user.index', compact('users'));
+        $users = DB::table('users')
+            ->join('roles', 'roles.id_role', '=', 'users.fk_role')
+            ->select('users.*', 'roles.*')
+            ->orderBy('users.id')
+            ->get();
+            
+        $programs1 = DB::table('users')
+            ->join('programs', 'programs.id_program', '=', 'users.fk_program1')
+            ->select('users.*','programs.program_name', 'programs.id_program')
+            ->orderBy('users.id')
+            ->get();
+
+        $programs2 = DB::table('users')
+            ->join('programs', 'programs.id_program', '=', 'users.fk_program2')
+            ->select('users.*','programs.program_name', 'programs.id_program')
+            ->orderBy('users.id')
+            ->get();
+
+        return view('user.index', compact('users', 'programs1', 'programs2'));
     }
 
     /**
@@ -42,26 +59,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->ajax()){
-            $user = new User;
-            $user->user_name = $request->user_name;
-            $user->lastname = $request->lastname;
-            $user->student_code = $request->student_code;
-            $user->city_residence = $request->city_residence;
-            $user->hometown = $request->hometown;
-            $user->nationality = $request->nationality;
-            $user->email = $request->email;
-            $user->save();
-
-            return response()->json([
-                'id'        => $user->user_name,
-                'name'      => $user->lastname,
-                'name'      => $user->student_code,
-                'name'      => $user->city_residence,
-                'name'      => $user->hometown,
-                'name'      => $user->nationality,
-                'address'   => $user->email]);
-        };
+        //
     }
 
     /**
@@ -75,13 +73,25 @@ class UserController extends Controller
         $user = DB::table('users')
             ->join('roles', 'roles.id_role', '=', 'users.fk_role')
             ->select('users.*', 'roles.*')
+            ->where('users.slug', '=', $slug)
             ->first();
 
-        $userProgram = UserProgram::where('fk_user', $user->id)->get();
+        $program1 = DB::table('programs')
+            ->join('users', 'programs.id_program', '=', 'users.fk_program1')
+            ->select('users.*', 'programs.program_name', 'programs.id_program')
+            ->where('users.slug', '=', $slug)
+            ->first();
+
+        $program2 = DB::table('programs')
+            ->join('users', 'programs.id_program', '=', 'users.fk_program2')
+            ->select('users.*', 'programs.program_name', 'programs.id_program')
+            ->where('users.slug', '=', $slug)
+            ->first();
+
         $programs = Program::all();
         $roles = Role::all();
-
-        return view('user.show', compact('user', 'userProgram', 'programs', 'roles'));
+        
+        return view('user.show', compact('user', 'programs', 'program1', 'program2', 'roles'));
     }
 
     /**
@@ -102,9 +112,38 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $slug)
     {
-        //
+        if($request->ajax()){
+            $user = User::where('slug', $slug)->first();
+            $user->name             = $request->name;
+            $user->lastname         = $request->lastname;
+            $user->student_code     = $request->student_code;
+            $user->city_residence   = $request->city_residence;
+            $user->hometown         = $request->hometown;
+            $user->nationality      = $request->nationality;
+            $user->email            = $request->email;
+            $user->fk_program1      = $request->fk_program1;
+            $user->fk_program2      = $request->fk_program2;
+            $user->fk_role          = $request->fk_role;
+            $user->save();
+
+            $program1 = Program::where('id_program', $user->fk_program1)->first();
+            $program2 = Program::where('id_program', $user->fk_program2)->first();
+
+            return response()->json([
+                'user_name'     => $user->user_name,
+                'lastname'      => $user->lastname,
+                'student_code'  => $user->student_code,
+                'city_residence'=> $user->city_residence,
+                'hometown'      => $user->hometown,
+                'nationality'   => $user->nationality,
+                'email'         => $user->email,
+                'fk_role'       => $user->fk_role,
+                'program1'      => $program1->program_name,
+                'program2'      => $program2->program_name,
+            ]);
+        };
     }
 
     /**
@@ -113,8 +152,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($slug)
     {
-        //
+        $user = User::where('slug', $slug)->first();
+        $user->delete();
+
+        return redirect()->route('usuarios.index');
     }
 }

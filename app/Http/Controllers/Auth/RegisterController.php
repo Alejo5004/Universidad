@@ -68,12 +68,12 @@ class RegisterController extends Controller
         $role = Role::where('role_name', 'Estudiante')->first();
 
         return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'slug' => $data['name'],
-            'student_code' => $data['name'],
-            'password' => Hash::make($data['password']),
-            'fk_role' => $role->id_role,
+            'name'      => $data['name'],
+            'email'     => $data['email'],
+            'password'  => Hash::make($data['password']),
+            'slug'      => hash('sha256', rand().time().$data['name']),
+            'student_code'=> hash('sha256', rand().time().$data['name']),
+            'fk_role'   => $role->id_role,
         ]);
     }
 }

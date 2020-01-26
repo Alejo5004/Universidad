@@ -1,8 +1,8 @@
 @extends('layouts.app')
 @section('content')
     <section class="container">
-        <h1 class="text-center mt-5">Todos los campus</h1>
-        <article class="my-3 text-center">
+        <h1 class="text-center my-5">Todos los campus</h1>
+        <article class="mb-5 text-center">
 
             <!-- Boton de Crear Campus -->
             <a class="btn btn-primary" onclick="ModalCampus('Crear Campus', 'Crear', '', '', '/campus', '')">Crear Campus</a>
@@ -106,6 +106,7 @@
                             Campus creado Correctamente <small>(Recarge la pagina)</small>
                         </div>
                     `);
+                    $('#modal').modal('hide')
                     if(sendMethod =='Post'){
                         $('tbody').append(`
                             <tr>

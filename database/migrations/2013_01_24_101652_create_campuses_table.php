@@ -18,6 +18,10 @@ class CreateCampusesTable extends Migration
             $table->string('campus_name');
             $table->string('campus_address');
             $table->timestamps();
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_unicode_ci';
         });
     }
 

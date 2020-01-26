@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
     <section class="container">
-        <h1 class="text-center my-5">Todos las Facultades</h1>
+        <h1 class="text-center my-5">Todos los Usuarios</h1>
         
         <table class="table table-striped">
             <thead class="thead-dark">
@@ -10,35 +10,62 @@
                     <th scope="col">Nombre y Apellido</th>
                     <th scope="col">Programa 1</th>
                     <th scope="col">Programa 2</th>
-                    <th scope="col">Codigo de Estudiante</th>
-                    <th scope="col">email</th>
-                    <th scope="col">Facultad</th>
-                    <th scope="col">Campus</th>
                     <th scope="col">Mas Información</th>
                     @if (Auth::user()->fk_role == 1)
-                        <th scope="col">Rol</th>
                         <th scope="col">Eliminar</th>
+                        <th scope="col">Rol</th>
                     @endif
-
                 </tr>
             </thead>
             <tbody class="tbody">
-                @foreach ($faculties as $faculty)
+                @php
+                    $p1 = 0;
+                    $p2 = 0;
+                @endphp
+                @foreach ($users as $user)
                     <tr>
-                        <th scope="row">{{$faculty->id_faculty}}</th>
-                        <td>{{$faculty->faculty_name}}</td>
-                        <td>{{$faculty->faculty_description}}</td>
+                        <th scope="row">{{$user->id}}</th>
+                        <td>{{$user->name}} {{$user->lastname}}</td>
+                        <td>
+                            @while ($p1 < count($programs1))
+                                @if($user->fk_program1 !== null)
+                                    {{$programs1[$p1]->program_name}}
+                                @else
+                                    @php
+                                        $p1 --;
+                                    @endphp
+                                @endif
+                                @break
+                            @endwhile
+                        </td>
+                        <td>
+                            @while ($p2 < count($programs2))
+                                @if($user->fk_program1 !== null)
+                                    {{$programs2[$p2]->program_name}}
+                                @else
+                                    @php
+                                        $p2 --;
+                                    @endphp
+                                @endif
+                                @break
+                            @endwhile
+                        </td>
+                        <td><a href="/usuarios/{{$user->slug}}" class="btn btn-info">Más Datos</a></td>
                         @if (Auth::user()->fk_role == 1)
-                            <td>{{$faculty->faculty_description}}</td>
                             <td>
-                                <form action="usuarios/{{$faculty->id_faculty}}" method="post">
+                                <form action="/usuarios/{{$user->slug}}" method="post">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn btn-danger btn-delete">Eliminar</button>
                                 </form>
                             </td>
+                            <td>{{$user->role_name}}</td>
                         @endif
                     </tr>
+                    @php
+                        $p1 ++;
+                        $p2 ++;
+                    @endphp
                 @endforeach
             </tbody>
         </table>

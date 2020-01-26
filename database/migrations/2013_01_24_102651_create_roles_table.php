@@ -17,6 +17,10 @@ class CreateRolesTable extends Migration
             $table->bigIncrements('id_role');
             $table->string('role_name');
             $table->timestamps();
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_unicode_ci';
         });
     }
 

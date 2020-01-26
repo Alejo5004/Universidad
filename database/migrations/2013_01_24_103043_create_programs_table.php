@@ -19,11 +19,14 @@ class CreateProgramsTable extends Migration
             $table->string('modality');
             $table->string('status');
             $table->timestamps();
-            $table->unsignedBigInteger('fk_faculty');
-            $table->unsignedBigInteger('fk_campus');
-            $table->foreign('fk_faculty')->references('id_faculty')->on('faculties');
-            $table->foreign('fk_campus')->references('id')->on('campuses');
-
+            $table->unsignedBigInteger('fk_faculty')->nullable();
+            $table->unsignedBigInteger('fk_campus')->nullable();
+            $table->foreign('fk_faculty')->references('id_faculty')->on('faculties')->onDelete('set null');
+            $table->foreign('fk_campus')->references('id')->on('campuses')->onDelete('set null');
+            
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_unicode_ci';
         });
     }
 

@@ -21,6 +21,7 @@ class ProgramController extends Controller
             ->join('faculties', 'programs.fk_faculty', '=', 'faculties.id_faculty')
             ->join('campuses', 'programs.fk_campus', '=', 'campuses.id')
             ->select('programs.*', 'faculties.faculty_name', 'faculties.id_faculty', 'campuses.campus_name', 'campuses.id')
+            ->orderBy('programs.id_program')
             ->get();
         $campuses = Campus::all();
         $faculties = Faculty::all();
@@ -110,7 +111,6 @@ class ProgramController extends Controller
     public function update(Request $request, $id)
     {
         if($request->ajax()){
-
             $program = Program::where('id_program', $id)->first();
             $program->program_name  = $request->program_name;
             $program->modality      = $request->modality;
@@ -124,6 +124,7 @@ class ProgramController extends Controller
                 ->join('faculties', 'programs.fk_faculty', '=', 'faculties.id_faculty')
                 ->join('campuses', 'programs.fk_campus', '=', 'campuses.id')
                 ->select('programs.*', 'faculties.faculty_name', 'faculties.id_faculty', 'campuses.campus_name', 'campuses.id')
+                ->orderBy('programs.id_program')
                 ->get();
 
             return response()->json(['programs'=> $programs]);

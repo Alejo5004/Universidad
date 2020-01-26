@@ -18,6 +18,10 @@ class CreateFacultiesTable extends Migration
             $table->string('faculty_name');
             $table->string('faculty_description');
             $table->timestamps();
+
+            $table->engine = 'InnoDB';
+            $table->charset = 'utf8';
+            $table->collation = 'utf8_unicode_ci';
         });
     }
 

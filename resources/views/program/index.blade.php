@@ -6,7 +6,7 @@
             <article class="text-center">
 
                 <!-- Boton de Crear Campus -->
-                <a class="btn btn-primary" onclick="ModalProgram('Crear Programa', '/programas', '', '', 'Crear')">Crear Programas</a>
+                <a class="btn btn-primary mb-5" onclick="ModalProgram('Crear Programa', '/programas', '', '', '', '', '', '', '', '', '', '', 'Crear')">Crear Programas</a>
 
                 <div id="component"></div>
             </article>
@@ -46,7 +46,11 @@
                                         '{{$program->modality}}',
                                         '{{$program->status}}',
                                         '{{$program->id_faculty}}',
+                                        '{{$program->fk_faculty}}',
+                                        '{{$program->faculty_name}}',
                                         '{{$program->id}}',
+                                        '{{$program->fk_campus}}',
+                                        '{{$program->campus_name}}',
                                         'Actualizar',
                                         )">
                                     Editar
@@ -141,83 +145,18 @@
                             Programa creado Correctamente
                         </div>
                     `);
-                    $('#modal').modal('hide')
                     
                     if(sendMethod == 'Post'){
-                        $('tbody').append(`
-                        <tr>
-                            <th scope="row">${res.id_program}</th>
-                            <td>${res.program_name}</td>
-                            <td>${res.modality}</td>
-                            <td>${res.status}</td>
-                            <td>${res.faculty_name}</td>
-                            <td>${res.campus_name}</td>
-                            <td>
-                                <a class="btn btn-warning" 
-                                    onclick="ModalProgram(
-                                        'Actualizar Programa',
-                                        '/programas/${res.id_program}',
-                                        'PUT',
-                                        '${res.program_name}',
-                                        '${res.modality}',
-                                        '${res.status}',
-                                        '${res.id_faculty}',
-                                        '${res.id}',
-                                        'Actualizar',
-                                        )">
-                                    Editar
-                                </a>
-                            </td>
-                            <td>
-                                
-                                <form action="/programas/${res.id_program}" method="post">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-danger btn-delete">Eliminar</button>
-                                </form>
-                            </td>
-                        </tr>
-                        `)
+                        InsertColum(res);
                     }else{
                         $('tbody').empty();
                         $.each( res, function( key, value ) {
                             $.each( value, function( key,  program) {
-                                $('tbody').append(`
-                                <tr>
-                                    <th scope="row">${program.id_program}</th>
-                                    <td>${program.program_name}</td>
-                                    <td>${program.modality}</td>
-                                    <td>${program.status}</td>
-                                    <td>${program.faculty_name}</td>
-                                    <td>${program.campus_name}</td>
-                                    <td>
-                                        <a class="btn btn-warning" 
-                                            onclick="ModalProgram(
-                                                'Actualizar Programa',
-                                                '/programas/${program.id_program}',
-                                                'PUT',
-                                                '${program.program_name}',
-                                                '${program.modality}',
-                                                '${program.status}',
-                                                '${program.id_faculty}',
-                                                '${program.id}',
-                                                'Actualizar',
-                                                )">
-                                            Editar
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <form action="/programas/${program.id_program}" method="post">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-danger btn-delete">Eliminar</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                `)
+                                InsertColum(program);
                             });
                         });
                     }
+                    $('#modal').modal('hide')
                 })
                 .fail(function(){
                     $('#alert').append(`
@@ -237,12 +176,52 @@
             })
         };
 
+        // Creacion de columna 
+        function InsertColum(res){
+            $('tbody').append(`
+                <tr>
+                    <th scope="row">${res.id_program}</th>
+                    <td>${res.program_name}</td>
+                    <td>${res.modality}</td>
+                    <td>${res.status}</td>
+                    <td>${res.faculty_name}</td>
+                    <td>${res.campus_name}</td>
+                    <td>
+                        <a class="btn btn-warning" 
+                            onclick="ModalProgram(
+                                'Actualizar Programa',
+                                '/programas/${res.id_program}',
+                                'PUT',
+                                '${res.program_name}',
+                                '${res.modality}',
+                                '${res.status}',
+                                '${res.id_faculty}',
+                                '${res.fk_faculty}',
+                                '${res.faculty_name}',
+                                '${res.id}',
+                                '${res.fk_campus}',
+                                '${res.campus_name}',
+                                'Actualizar',
+                                )">
+                            Editar
+                        </a>
+                    </td>
+                    <td>
+                        <form action="/programas/${res.id_program}" method="post">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-danger btn-delete">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                `)
+        }
         // Modal de edit y create
-        function ModalProgram(title, action, method, program_name, btn ){
+        function ModalProgram(title, action, method, program_name, modality, status, id_faculty, fk_faculty, faculty_name, id, fk_campus, campus_name, btn ){
             $('#component').empty()
             $('#component').append(`
                 <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-scrollable" role="document">
+                    <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="modal">${title}</h5>
@@ -259,33 +238,37 @@
                                         <label for="program_name">Nombre</label>
                                         <input type="text" class="form-control" id="program_name" name="program_name" required="true" value="${program_name}">
                                     </div>
+                                    <label for="basic-url">Modalidad</label>
                                     <div class="input-group mb-3">
                                         <select name="modality" id="modality" class="custom-select" required="true">
                                             <option selected>Selecciona una modalidad</option>
-                                            <option value="Presencial" {{ $program->modality == 'Presencial' ? 'selected' : '' }}>Presencial</option>
-                                            <option value="Virtual" {{ $program->modality == 'Virtual' ? 'selected' : '' }}>Virtual</option>
+                                            <option value="Presencial" {{ `+modality+` == 'Presencial' ? 'selected' : '' }}>Presencial</option>
+                                            <option value="Virtual" {{ `+modality+` == 'Virtual' ? 'selected' : '' }}>Virtual</option>
                                         </select>
                                     </div>
+                                    <label for="basic-url">Estado</label>
                                     <div class="input-group mb-3">
                                         <select name="status" id="status" class="custom-select" required="true">
                                             <option selected>Selecciona una Estado</option>
-                                            <option value="Activa" {{ $program->status == 'Activa' ? 'selected' : '' }}>Activa</option>
-                                            <option value="Desactiva" {{ $program->status == 'Desactiva' ? 'selected' : '' }}>Desactiva</option>
+                                            <option value="Activa" {{ `+status+` == 'Activa' ? 'selected' : '' }}>Activa</option>
+                                            <option value="Desactiva" {{ `+status+` == 'Desactiva' ? 'selected' : '' }}>Desactiva</option>
                                         </select>
                                     </div>
+                                    <label for="basic-url">Facultad</label>
                                     <div class="input-group mb-3">
                                         <select name="fk_faculty" id="fk_faculty" class="custom-select" required="true">
                                             <option selected>Selecciona una facultad</option>
                                             @foreach($faculties as $faculty)
-                                                <option value="{{$faculty->id_faculty}}" {{ $faculty->id_faculty == $program->fk_faculty ? 'selected' : '' }}>{{$faculty->faculty_name}}</option>
+                                                <option value="{{$faculty->id_faculty}}" {{ $faculty->id_faculty == `+fk_faculty+` ? 'selected' : '' }}>{{$faculty->faculty_name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
+                                    <label for="basic-url">Campus</label>
                                     <div class="input-group mb-3">
                                         <select name="fk_campus" id="fk_campus" class="custom-select" required="true">
                                             <option selected>Selecciona un Campus</option>
                                             @foreach($campuses as $campus)
-                                                <option value="{{$campus->id}}" {{ $campus->id == $program->fk_campus ? 'selected' : '' }}>{{$campus->campus_name}}</option>
+                                                <option value="{{$campus->id}}" {{$campus->id == '${fk_campus}' ? 'selected' : '' }}>{{$campus->campus_name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
